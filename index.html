@@ -381,12 +381,12 @@
   <div class="content">
     <h2>Begin Your Ritual</h2>
     <div class="sub">Free shipping on orders over €50</div>
-    <a href="#collection" class="btn">Shop the Collection</a>
+    <a href="#" class="btn" id="shopBtn">Shop the Collection</a>
   </div>
 </section>
 
-<!-- COLLECTION: Three teas -->
-<section id="collection" class="collection">
+<!-- COLLECTION: Three teas (hidden until Shop is clicked) -->
+<section id="collection" class="collection" hidden>
   <div class="collection-head">
     <h2>Choose Your Ritual</h2>
     <p class="sub">Three blends. One origin. Crafted for every mood.</p>
@@ -533,7 +533,18 @@
   const cardObs = new IntersectionObserver(es => es.forEach(e => {
     if (e.isIntersecting) { e.target.classList.add('in'); cardObs.unobserve(e.target); }
   }), { threshold: 0.2 });
-  document.querySelectorAll('.tea-card').forEach(c => cardObs.observe(c));
+
+  // Reveal collection on "Shop the Collection" click, then scroll & animate cards
+  document.getElementById('shopBtn').addEventListener('click', (ev) => {
+    ev.preventDefault();
+    const collection = document.getElementById('collection');
+    collection.hidden = false;
+    // wait a frame so layout is ready, then scroll and observe
+    requestAnimationFrame(() => {
+      collection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelectorAll('.tea-card').forEach(c => cardObs.observe(c));
+    });
+  });
 </script>
 </body>
 </html>
