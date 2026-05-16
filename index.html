@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Assam Tea — Ancient Wisdom in Every Leaf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: auto; }
+  body {
+    background: #0a0a0a;
+    color: #f5e9c8;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.6rem 2.5rem;
+    background: transparent;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.25em;
+    font-size: 0.85rem;
+    color: #e8d39a;
+  }
+  nav a { color: inherit; text-decoration: none; transition: color .3s; }
+  nav a:hover { color: #fff; }
+  nav .brand { font-weight: 600; }
+
+  /* ============ SCROLL-SCRUB VIDEO STAGE ============ */
+  .scroll-wrap { position: relative; height: 400vh; }
+  .stage {
+    position: sticky; top: 0;
+    width: 100%; height: 100vh;
+    overflow: hidden;
+    background: #0a0a0a;
+  }
+  #scrubVideo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.35);
+    pointer-events: none;
+  }
+
+  /* TEXT OVERLAYS */
+  .text-layer {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 0 2rem;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .text-layer .inner { max-width: 800px; }
+  .text-layer h1, .text-layer h2 {
+    color: #e8c878;
+    text-shadow: 0 0 40px rgba(232,200,120,0.4);
+  }
+  .text-layer .sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: rgba(245,233,200,0.85);
+    font-size: 1.4rem;
+    margin: 0.8rem 0 1.5rem;
+  }
+  .text-layer p {
+    color: rgba(245,233,200,0.75);
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  /* Title fades out as bag opens */
+  .t1 { opacity: clamp(0, calc(1 - var(--p) * 5), 1); }
+  .t1 h1 {
+    font-size: clamp(3rem, 9vw, 7rem);
+    letter-spacing: 0.4em;
+  }
+  .t1 .tagline {
+    margin-top: 1.5rem; letter-spacing: 0.4em; font-size: 0.8rem;
+    color: rgba(245,233,200,0.6);
+  }
+
+  /* Mid copy: appears as bag opens */
+  .t2 {
+    opacity: clamp(0, calc(min((var(--p) - 0.35) * 6, 1 - (var(--p) - 0.65) * 6)), 1);
+  }
+  .t2 h2 { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1; }
+
+  /* Final copy: appears after burst */
+  .t3 {
+    opacity: clamp(0, calc(min((var(--p) - 0.7) * 6, 1 - (var(--p) - 0.97) * 30)), 1);
+  }
+  .t3 h2 { font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1; }
+
+  /* Hero letters */
+  #heroTitle span {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(-30px);
+    animation: dropIn 0.8s forwards;
+  }
+  @keyframes dropIn { to { opacity: 1; transform: translateY(0); } }
+
+  /* ============ CTA SECTION ============ */
+  .cta {
+    position: relative;
+    height: 100vh;
+    background: #0a0a0a;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; overflow: hidden;
+  }
+  .cta .content {
+    position: relative; z-index: 2;
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+  .cta.visible .content { opacity: 1; transform: translateY(0); }
+  .cta h2 {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    color: #e8c878;
+    letter-spacing: 0.05em;
+  }
+  .cta .sub {
+    color: rgba(245,233,200,0.6);
+    margin: 1.2rem 0 2.5rem;
+    letter-spacing: 0.15em;
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.9rem 2.2rem;
+    border: 1px solid #e8c878;
+    color: #e8c878;
+    background: transparent;
+    text-decoration: none;
+    letter-spacing: 0.3em;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.4s ease;
+  }
+  .btn:hover {
+    background: #e8c878; color: #0a0a0a;
+    box-shadow: 0 0 30px rgba(232,200,120,0.4);
+  }
+
+  .gold-particles { position: absolute; inset: 0; overflow: hidden; z-index: 0; }
+  .gold-particles span {
+    position: absolute; bottom: -10px;
+    width: 3px; height: 3px;
+    background: #e8c878; border-radius: 50%;
+    box-shadow: 0 0 6px #e8c878, 0 0 12px rgba(232,200,120,0.5);
+    animation: rise linear infinite;
+  }
+  @keyframes rise {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    10%, 90% { opacity: 0.8; }
+    100% { transform: translateY(-110vh) translateX(20px); opacity: 0; }
+  }
+
+  /* scroll hint */
+  .scroll-hint {
+    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+    font-size: 0.7rem; letter-spacing: 0.4em; color: rgba(232,200,120,0.6);
+    opacity: clamp(0, calc(1 - var(--p) * 6), 1);
+    animation: bob 2s ease-in-out infinite;
+    z-index: 4;
+  }
+  @keyframes bob { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 8px); } }
+
+  footer {
+    position: absolute;
+    bottom: 1.5rem; left: 0; right: 0;
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: rgba(245,233,200,0.35);
+    z-index: 3;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1.2rem 1.4rem; font-size: 0.7rem; letter-spacing: 0.2em; }
+    .t1 h1 { letter-spacing: 0.25em; }
+  }
+</style>
+</head>
+<body style="--p: 0;">
+
+<nav>
+  <a href="#top" class="brand">ASSAM TEA</a>
+  <a href="#cta">SHOP</a>
+</nav>
+
+<!-- SCROLL-DRIVEN VIDEO STAGE -->
+<div class="scroll-wrap" id="scrollWrap">
+  <div class="stage">
+    <video id="scrubVideo" muted playsinline preload="auto" poster="images/hero1.png">
+      <source src="images/hero_scrub.mp4" type="video/mp4">
+    </video>
+    <div class="overlay"></div>
+
+    <!-- Text overlays driven by scroll -->
+    <div class="text-layer t1">
+      <div class="inner">
+        <h1 id="heroTitle"></h1>
+        <div class="tagline">— ANCIENT WISDOM IN EVERY LEAF —</div>
+      </div>
+    </div>
+
+    <div class="text-layer t2">
+      <div class="inner">
+        <h2>A single bag.</h2>
+        <div class="sub">Ancient wisdom inside.</div>
+        <p>Every leaf hand-picked from the misty valleys of Assam. Steeped in tradition, crafted for the modern soul.</p>
+      </div>
+    </div>
+
+    <div class="text-layer t3">
+      <div class="inner">
+        <h2>Water. Nature. Transform.</h2>
+        <div class="sub">The ritual begins with a single steep.</div>
+        <p>Pure Assam black tea. No additives. No compromise. Just the raw power of nature in your cup.</p>
+        <a href="#cta" class="btn" style="margin-top:2rem; pointer-events:auto;">Shop Now</a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">SCROLL</div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section id="cta" class="cta">
+  <div class="gold-particles" id="goldParticles"></div>
+  <div class="content">
+    <h2>Begin Your Ritual</h2>
+    <div class="sub">Free shipping on orders over €50</div>
+    <a href="#" class="btn">Shop the Collection</a>
+  </div>
+  <footer>© ASSAM TEA · CRAFTED WITH REVERENCE</footer>
+</section>
+
+<script>
+  // Hero letter-by-letter
+  (function(){
+    const title = document.getElementById('heroTitle');
+    'ASSAM TEA'.split('').forEach((ch, i) => {
+      if (ch === ' ') {
+        title.appendChild(document.createElement('br'));
+        return;
+      }
+      const s = document.createElement('span');
+      s.textContent = ch;
+      s.style.animationDelay = (0.3 + i * 0.15) + 's';
+      title.appendChild(s);
+    });
+  })();
+
+  // Scroll-scrub the video
+  const wrap = document.getElementById('scrollWrap');
+  const video = document.getElementById('scrubVideo');
+  let videoReady = false;
+  let targetTime = 0;
+
+  video.addEventListener('loadedmetadata', () => {
+    videoReady = true;
+    update();
+  });
+  // Prime it (some browsers won't load metadata until played)
+  video.play().then(() => video.pause()).catch(() => {});
+
+  function tick() {
+    if (videoReady && isFinite(video.duration)) {
+      const cur = video.currentTime;
+      const diff = targetTime - cur;
+      if (Math.abs(diff) > 0.005) {
+        video.currentTime = cur + diff * 0.18;
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  let ticking = false;
+  function update() {
+    const rect = wrap.getBoundingClientRect();
+    const total = wrap.offsetHeight - window.innerHeight;
+    const scrolled = Math.min(Math.max(-rect.top, 0), total);
+    const p = total > 0 ? scrolled / total : 0;
+    document.body.style.setProperty('--p', p.toFixed(4));
+    if (videoReady && isFinite(video.duration)) {
+      targetTime = p * (video.duration - 0.05);
+    }
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+
+  // Gold particles in CTA
+  (function(){
+    const container = document.getElementById('goldParticles');
+    for (let i = 0; i < 60; i++) {
+      const s = document.createElement('span');
+      s.style.left = Math.random() * 100 + '%';
+      s.style.animationDuration = (8 + Math.random() * 12) + 's';
+      s.style.animationDelay = (Math.random() * 15) + 's';
+      const sz = 1 + Math.random() * 3;
+      s.style.width = sz + 'px'; s.style.height = sz + 'px';
+      container.appendChild(s);
+    }
+  })();
+
+  new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('visible')),
+    { threshold: 0.3 }).observe(document.getElementById('cta'));
+</script>
+</body>
+</html>
